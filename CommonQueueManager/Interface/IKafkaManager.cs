@@ -2,7 +2,7 @@
 {
     public interface IKafkaManager : IQueueManager
     {
-        void Producer(string message);
-        void Consumer();
+        //void Producer(string message);
+        //void Consumer();
     }
 }

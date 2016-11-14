@@ -49,7 +49,7 @@ namespace CommonQueueManager.QueueManager
                 //Serialize message
                 var message = Encoding.Default.GetString(deliveryArgs.Body);
 
-                Console.WriteLine("Message Received - {0}", message);
+                Console.WriteLine("Message Received from RabbitMQ - {0}", message);
                 channel.BasicAck(deliveryArgs.DeliveryTag, false);
             }
         }

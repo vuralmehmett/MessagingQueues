@@ -1,6 +1,7 @@
-﻿using CommonQueueManager.Interface;
+﻿using System;
+using System.Configuration;
+using CommonQueueManager.Interface;
 using CommonQueueManager.QueueManager;
-using KafkaNet;
 using Ninject.Modules;
 
 namespace CommonQueueManager.IoC
@@ -12,9 +13,15 @@ namespace CommonQueueManager.IoC
         /// </summary>
         public override void Load()
         {
-            //Bind<IRabbitMqManager>().To<RabbitManager>();
-            //Bind<IKafkaManager>().To<KafkaManager>();
-            Bind<IQueueManager>().To<RabbitManager>();
+            if (Convert.ToInt16(ConfigurationManager.AppSettings["MessagingQueueOptions"]) == 0)
+            {
+                Bind<IQueueManager>().To<RabbitManager>();
+            }
+
+            else if (Convert.ToInt16(ConfigurationManager.AppSettings["MessagingQueueOptions"]) == 1)
+            {
+                Bind<IQueueManager>().To<KafkaManager>();
+            }
         }
     }
 }

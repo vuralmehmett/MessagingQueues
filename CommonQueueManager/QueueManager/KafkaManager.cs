@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Configuration;
 using System.Text;
+using System.Threading;
+using CommonQueueManager.ConnectionFactory;
 using CommonQueueManager.Interface;
 using KafkaNet;
 using KafkaNet.Model;
@@ -10,53 +12,41 @@ namespace CommonQueueManager.QueueManager
 {
     public class KafkaManager : IKafkaManager
     {
-        private readonly IBrokerRouter _brokerRouter;
-
         public KafkaManager()
         {
-            string uri = "http://" + ConfigurationManager.AppSettings["MessagingQueueHostAddress"] + ":" +
-                        ConfigurationManager.AppSettings["KafkaPort"];
-
-            var kafkaOptions = new KafkaOptions(new Uri(uri));
-            var brokerRouter = new BrokerRouter(kafkaOptions);
-
-            _brokerRouter = brokerRouter;
+            var conn = KafkaConnectionFactory.CreateConnection(Thread.CurrentThread.ManagedThreadId);
+            KafkaConnectionFactory.CreateRouter(Thread.CurrentThread.ManagedThreadId, conn);
         }
 
-        public void Producer(string message)
+        public void SendMessage(string message)
         {
             var topic = ConfigurationManager.AppSettings["QueueName"];
 
-            var producer = new Producer(_brokerRouter);
+            var brokerRouter = KafkaConnectionFactory.GetBrokerPerThreadId(Thread.CurrentThread.ManagedThreadId);
+
+            var producer = new Producer(brokerRouter);
 
             producer.SendMessageAsync(topic, new[] { new Message(message), }).Wait();
+
         }
 
-        public void Consumer()
+        public void GetMessage()
         {
             var topic = ConfigurationManager.AppSettings["QueueName"];
 
-            Console.WriteLine("Consume :" + topic);
-            Console.WriteLine("\n");
-            Console.WriteLine($" Consuming {topic}");
+            var brokerRouter = KafkaConnectionFactory.GetBrokerPerThreadId(Thread.CurrentThread.ManagedThreadId);
 
-            var consumer = new Consumer(new ConsumerOptions(topic, _brokerRouter));
+            Console.WriteLine("Consume from Kafka :" + topic);
+            Console.WriteLine("\n");
+            Console.WriteLine($" Consuming from Kafka {topic}");
+
+            var consumer = new Consumer(new ConsumerOptions(topic, brokerRouter));
 
             foreach (var message in consumer.Consume())
             {
                 Console.WriteLine("Response : PartitionId:{0}, Offset:{1}, Message:{2}",
                     message.Meta.PartitionId, message.Meta.Offset, Encoding.UTF8.GetString(message.Value));
             }
-        }
-
-        public void SendMessage(string message)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void GetMessage()
-        {
-            throw new NotImplementedException();
         }
     }
 }

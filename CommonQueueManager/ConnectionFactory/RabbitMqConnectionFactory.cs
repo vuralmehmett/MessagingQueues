@@ -42,16 +42,6 @@ namespace CommonQueueManager.ConnectionFactory
             }
         }
 
-        public static IConnection GetConnection(int threadId)
-        {
-            if (ConnectionsDict.ContainsKey(threadId))
-            {
-                return ConnectionsDict[threadId].Connection;
-            }
-
-            throw new KeyNotFoundException();
-        }
-
         public static IModel CreateChannel(int threadId, IConnection conn)
         {
             lock (SyncObj)
@@ -68,6 +58,16 @@ namespace CommonQueueManager.ConnectionFactory
 
                 return newChannel;
             }
+        }
+
+        public static IConnection GetConnection(int threadId)
+        {
+            if (ConnectionsDict.ContainsKey(threadId))
+            {
+                return ConnectionsDict[threadId].Connection;
+            }
+
+            throw new KeyNotFoundException();
         }
 
         public static List<IModel> GetChannels(int threadId)
