@@ -48,5 +48,15 @@ namespace CommonQueueManager.QueueManager
                     message.Meta.PartitionId, message.Meta.Offset, Encoding.UTF8.GetString(message.Value));
             }
         }
+
+        public void SendMessage(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetMessage()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
