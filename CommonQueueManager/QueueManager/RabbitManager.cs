@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
 using System.Threading;
@@ -52,6 +53,41 @@ namespace CommonQueueManager.QueueManager
                 Console.WriteLine("Message Received from RabbitMQ - {0}", message);
                 channel.BasicAck(deliveryArgs.DeliveryTag, false);
             }
+        }
+
+        public List<string> TestGet()
+        {
+            var messageList = new List<string>();
+
+            var channel = RabbitMqConnectionFactory.GetChannelPerThreadId(Thread.CurrentThread.ManagedThreadId);
+
+            var queueDeclareResponse = channel.QueueDeclare(TopicName, true, false, false, null);
+            var consumer = new QueueingBasicConsumer(channel);
+
+            try
+            {
+                channel.BasicConsume(TopicName, true, consumer);
+
+                Console.WriteLine(" [*] Processing existing messages.");
+
+                for (int i = 0; i < queueDeclareResponse.MessageCount; i++)
+                {
+                    var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
+                    var body = ea.Body;
+                    var message = Encoding.UTF8.GetString(body);
+                    messageList.Add(message);
+                    Console.WriteLine(" [x] Received {0}", message);
+                }
+
+            }
+            catch (Exception)
+            {
+                var response = channel.BasicGet(TopicName, false);
+                channel.BasicNack(response.DeliveryTag, true, true);
+                throw;
+            }
+
+            return messageList;
         }
     }
 }

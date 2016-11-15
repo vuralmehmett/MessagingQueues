@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
 using System.Threading;
@@ -48,5 +49,73 @@ namespace CommonQueueManager.QueueManager
                     message.Meta.PartitionId, message.Meta.Offset, Encoding.UTF8.GetString(message.Value));
             }
         }
+
+        //public List<KafkaMessaging> TestGet()
+        //{
+        //    List<KafkaMessaging> kafkaMessagingList = new List<KafkaMessaging>();
+
+        //    var topic = ConfigurationManager.AppSettings["QueueName"];
+
+        //    var brokerRouter = KafkaConnectionFactory.GetBrokerPerThreadId(Thread.CurrentThread.ManagedThreadId);
+
+        //    var consumer = new Consumer(new ConsumerOptions(topic, brokerRouter));
+
+        //    foreach (var message in consumer.Consume())
+        //    {
+        //        KafkaMessaging messaging = new KafkaMessaging
+        //        {
+        //            PartitionId = message.Meta.PartitionId,
+        //            Offset = (int) message.Meta.Offset,
+        //            Message = Encoding.UTF8.GetString(message.Value)
+        //        };
+
+        //        kafkaMessagingList.Add(messaging);
+        //        //Console.WriteLine("Response : PartitionId:{0}, Offset:{1}, Message:{2}",
+        //        //    message.Meta.PartitionId, message.Meta.Offset, Encoding.UTF8.GetString(message.Value));
+        //    }
+
+        //    return kafkaMessagingList;
+        //}
+
+        //List<string> IQueueManager.TestGet()
+        //{
+        //    List<KafkaMessaging> kafkaMessagingList = new List<KafkaMessaging>();
+
+        //    var topic = ConfigurationManager.AppSettings["QueueName"];
+
+        //    var brokerRouter = KafkaConnectionFactory.GetBrokerPerThreadId(Thread.CurrentThread.ManagedThreadId);
+
+        //    var consumer = new Consumer(new ConsumerOptions(topic, brokerRouter));
+
+        //    var asd = consumer.GetTopic(topic);
+        //    var sss = consumer.ConsumerTaskCount;
+        //    var ssss = consumer.GetOffsetPosition();
+
+
+        //    foreach (var message in consumer.Consume())
+        //    {
+        //        KafkaMessaging messaging = new KafkaMessaging
+        //        {
+        //            PartitionId = message.Meta.PartitionId,
+        //            Offset = (int)message.Meta.Offset,
+        //            Message = Encoding.UTF8.GetString(message.Value)
+        //        };
+
+        //        kafkaMessagingList.Add(messaging);
+        //        //Console.WriteLine("Response : PartitionId:{0}, Offset:{1}, Message:{2}",
+        //        //    message.Meta.PartitionId, message.Meta.Offset, Encoding.UTF8.GetString(message.Value));
+        //    }
+
+        //    var ss = kafkaMessagingList;
+
+        //    return new List<string>();
+        }
+
+        //public class KafkaMessaging
+        //{
+        //    public int PartitionId { get; set; }
+        //    public int Offset { get; set; }
+        //    public string Message { get; set; }
+        //}
     }
-}
+

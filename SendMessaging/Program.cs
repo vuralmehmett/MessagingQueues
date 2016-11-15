@@ -2,6 +2,8 @@
 using CommonQueueManager.Interface;
 using CommonQueueManager.IoC;
 using Ninject;
+using RabbitMQ.Client.Framing.Impl;
+using SendMessaging.Model;
 
 namespace SendMessaging
 {
@@ -12,21 +14,32 @@ namespace SendMessaging
 
         static void Main(string[] args)
         {
-            Kernel.Load(new QueueModule());
+            var connection = new BaseHttpRequest.Connection();
 
-            var ninjectConnect = Kernel.Get<IQueueManager>();
+            MessagingQueue messagingQueue = new MessagingQueue();
 
-            Console.WriteLine("Enter your message and press Enter. Quit with 'q'.");
-
-            while (true)
+            for (int i = 0; i < 50; i++)
             {
-                var message = Console.ReadLine();
-                if (message != null && message.ToLower() == "q") break;
-
-                ninjectConnect.SendMessage(message);
+                connection.Post(messagingQueue);
             }
 
-            ninjectConnect.GetMessage();
+            Console.WriteLine("bitti");
+
+            //Kernel.Load(new QueueModule());
+
+            //var ninjectConnect = Kernel.Get<IQueueManager>();
+
+            //Console.WriteLine("Enter your message and press Enter. Quit with 'q'.");
+
+            ////while (true)
+            ////{
+            ////    var message = Console.ReadLine();
+            ////    if (message != null && message.ToLower() == "q") break;
+
+            ////    ninjectConnect.SendMessage(message);
+            ////}
+
+            //ninjectConnect.GetMessage();
         }
     }
 }
