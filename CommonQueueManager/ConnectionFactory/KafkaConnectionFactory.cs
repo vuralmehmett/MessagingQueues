@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using KafkaNet;
 using KafkaNet.Model;
 
@@ -38,6 +39,12 @@ namespace CommonQueueManager.ConnectionFactory
                 var brokerRouter = new BrokerRouter(kafkaOptions);
 
                 _brokerRouter = brokerRouter;
+
+                if (ConnectionsDict.ContainsKey(threadId))
+                {
+                    var connection = ConnectionsDict.Where(x => x.Key == threadId).Select(c => c.Value.BrokerRouter).Single();
+                    return connection;
+                }
 
                 ConnectionsDict.Add(threadId, new KafkaQueueConnection
                 {

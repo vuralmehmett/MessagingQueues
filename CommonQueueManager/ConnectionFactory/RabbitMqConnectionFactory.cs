@@ -32,6 +32,12 @@ namespace CommonQueueManager.ConnectionFactory
                 var factory = rabbitMqConnection.RabbitMqConnection();
                 var newConn = factory.CreateConnection();
 
+                if (ConnectionsDict.ContainsKey(threadId))
+                {
+                    var connection = ConnectionsDict.Where(x => x.Key == threadId).Select(c => c.Value.Connection).Single();
+                    return connection;
+                }
+
                 ConnectionsDict.Add(threadId, new QueueConnection
                 {
                     Connection = newConn,
@@ -53,7 +59,7 @@ namespace CommonQueueManager.ConnectionFactory
                 }
 
                 var newChannel = conn.CreateModel();
-
+                
                 ConnectionsDict[threadId].Channels.Add(newChannel);
 
                 return newChannel;
@@ -82,7 +88,7 @@ namespace CommonQueueManager.ConnectionFactory
                 throw new KeyNotFoundException();
             }
 
-            return ConnectionsDict[threadId].Channels.Single();
+            return ConnectionsDict[threadId].Channels.First();
         }
 
         public static List<IModel> GetChannelsForConnection(IConnection conn)

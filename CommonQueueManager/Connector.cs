@@ -13,7 +13,8 @@ namespace CommonQueueManager
                 UserName = ConfigurationManager.AppSettings["RabbitMQUserName"],
                 Password = ConfigurationManager.AppSettings["RabbitMQPassword"],
                 VirtualHost = ConfigurationManager.AppSettings["RabbitMQVirtualHost"],
-                Port = Convert.ToInt32(ConfigurationManager.AppSettings["RabbitMQPort"])
+                Port = Convert.ToInt32(ConfigurationManager.AppSettings["RabbitMQPort"]),
+                ContinuationTimeout = TimeSpan.FromHours(1)
             };
 
             return factory;

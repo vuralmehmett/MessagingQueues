@@ -17,14 +17,14 @@ namespace MessagingQueues.WebApi.Controllers
         public async Task<IHttpActionResult> SendData(MessagingQueue model)
         {
             _queueManager.SendMessage(model.Message);
-            return Ok();
+            return await Task.FromResult<IHttpActionResult>(Ok());
         }
 
         [HttpGet]
         public async Task<IHttpActionResult> GetData()
         {
             _queueManager.GetMessage();
-            return Ok();
+            return await Task.FromResult<IHttpActionResult>(Ok());
         }
     }
 }
